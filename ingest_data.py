@@ -26,13 +26,15 @@ def main():
 
     add_vehicle_location = ("INSERT INTO vehicle_locations "
                             "(id, longitude, latitude, route_number, direction, updated_at) "
-                            "VALUES (%(id)s, %(longitude)s, %(latitude)s, %(route_number)s, %(direction)s, %(updated_at)s)")
+                            "VALUES (%(id)s, %(longitude)s, %(latitude)s, %(route_number)s, %(direction)s, %(updated_at)s) "
+                            "ON DUPLICATE KEY UPDATE "
+                            "longitude=VALUES(longitude),latitude=VALUES(latitude),route_number=VALUES(route_number),direction=VALUES(direction), updated_at=VALUES(updated_at)")
 
     try:
         db_connection = mysql.connector.connect(**config)
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-            print("Something is wrong with your user name or password")
+            print("Incorrect username or password")
         elif err.errno == errorcode.ER_BAD_DB_ERROR:
             print("Database does not exist")
         else:
