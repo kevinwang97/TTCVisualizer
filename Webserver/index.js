@@ -1,5 +1,6 @@
 var mysql = require('mysql');
 var express = require('express');
+var cors = require('cors');
 
 var dbConnection = mysql.createConnection({
     host: 'localhost',
@@ -9,6 +10,7 @@ var dbConnection = mysql.createConnection({
 });
 
 var app = express();
+app.use(cors());
 
 dbConnection.connect(function(err){
     if(!err) {
@@ -21,7 +23,6 @@ dbConnection.connect(function(err){
 app.get("/", function(req, res){
     dbConnection.query('SELECT * from vehicle_locations',
     function(err, rows, fields) {
-        dbConnection.end();
         if(!err) {
             res.send(rows)
         } else {
@@ -31,3 +32,18 @@ app.get("/", function(req, res){
 });
 
 app.listen(3000);
+
+function exitHandler(options, err) {
+    if (options.cleanup) {
+        dbConnection.end();
+    }
+    if (err) console.log(err.stack);
+    if (options.exit) {
+        console.log("exiting");
+        process.exit();
+    }
+}
+
+process.on('SIGINT', exitHandler.bind(null, {cleanup: true, exit:true}));
+process.on('uncaughtException', exitHandler.bind(null, {exit:true}));
+process.on('exit', exitHandler.bind(null,{cleanup:true}));

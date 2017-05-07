@@ -8,8 +8,8 @@ sys.path.insert(0, 'NextBus/')
 
 from NextBusClient import NextBusClient
 
-user = os.environ['MYSQL_USER']
-password = os.environ['MYSQL_PASSWORD']
+user = 'test' #os.environ['MYSQL_USER']
+password = 'test' #os.environ['MYSQL_PASSWORD']
 db = 'ttc_bus_data'
 
 config = {
