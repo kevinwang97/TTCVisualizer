@@ -4,6 +4,8 @@ var TTCVisualizer = (function() {
     var key = "AIzaSyBbsUrbv6Kw4aG4IvwdbU4hUKPm-UEsAWU";
     var serverEndpoint = 'http://localhost:3000/';
     var busIcon = "ttc_bus_icon.ico";
+    var busses = {};
+    var bus;
 
     var getData = function(callback) {
         var xmlHttp = new XMLHttpRequest();
@@ -28,13 +30,19 @@ var TTCVisualizer = (function() {
     var plot = function() {
         getData(function(res) {
             res.forEach(function(data) {
-                var marker = new google.maps.Marker({
-                    position: new google.maps.LatLng(data.latitude, data.longitude),
-                    map: map,
-                    title: data.route_number.toString(),
-                    icon: busIcon
-                });
-                marker.setMap(map)
+                bus = busses[data.id];
+                if (bus) {
+                    var newPos = new google.maps.LatLng(data.latitude, data.longitude);
+                    bus.setPosition(newPos)
+                } else {
+                    busses[data.id] = new google.maps.Marker({
+                        position: new google.maps.LatLng(data.latitude, data.longitude),
+                        map: map,
+                        title: data.route_number.toString(),
+                        icon: busIcon
+                    });
+                    busses[data.id].setMap(map)
+                }
             });
         });
     };

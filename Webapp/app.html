@@ -13,7 +13,9 @@
 <script>
     $(document).ready(function() {
         TTCVisualizer.initialize();
-        TTCVisualizer.plot();
+        setInterval(function(){
+            TTCVisualizer.plot();
+        }, 1000);
     });
 </script>
 </body>
